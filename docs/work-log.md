@@ -96,3 +96,34 @@ Review available statistics and determine which variables might meaningfully des
 - forwards and their role variations
 
 The goal is to understand the football meaning of the available metrics before downloading data or building models.
+
+## 2026-09-05 — Expanded Variable Inventory
+
+### Progress
+
+Built broader candidate-variable inventories for four positional families:
+
+- defenders
+- midfielders
+- forwards
+- goalkeepers
+
+The lists currently separate playing-time/context variables, performance variables, additional potentially useful metrics, and per-90 versions of selected statistics.
+
+Examples of newly catalogued candidate metrics include expected goals, expected assisted goals, key passes, passes into the penalty area, through balls, progressive carries, touches by pitch zone, carries into the penalty area, take-ons, ball recoveries, line-breaking passes, dispossessions, duel outcomes, long passing, clearances, physical distance covered, and goalkeeper-specific shot-stopping and sweeping actions.
+
+### Emerging design questions
+
+The variable inventory is intentionally broad at this stage. The next step is to organize metrics into football-relevant feature families or subcategories rather than treating each statistic independently.
+
+Important distinctions to address next:
+
+- **context/exposure variables** such as age, matches, starts, minutes, and 90s should not be confused with playing-skill features;
+- **per-90 statistics are normalization transformations**, not separate football dimensions;
+- raw totals and derived rates may be redundant and should not automatically coexist in the final model;
+- a single master feature dictionary may be preferable to permanently duplicating the same variables across positional lists, with role-specific relevance handled later;
+- hybrid roles should remain possible, rather than forcing every player into a rigid broad-position feature set.
+
+### Next session
+
+Begin converting the raw metric inventory into a structured feature taxonomy, then evaluate which metrics are relevant, redundant, contextual, derived, or unavailable/unconfirmed for each role family.
