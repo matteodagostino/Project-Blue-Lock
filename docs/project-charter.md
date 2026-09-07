@@ -1,4 +1,4 @@
-Project Charter v0.2
+## Project Charter v0.2
 
 ## Problem
 
