@@ -1,24 +1,24 @@
-# Work Log
+Work Log
 
 This file records the project's development chronologically so that research decisions, scope changes, and reasoning remain visible over time.
 
-## 2026-09-01 — Project Framing
+2026-09-01 — Project Framing
 
-### Initial idea
+Initial idea
 
 Build a data-driven soccer player discovery and profiling system that can identify players whose performance characteristics, development trajectory, and playing profile resemble successful players or fit predefined club/role profiles.
 
 The ultimate long-term ambition is to investigate whether young players who may eventually become elite can be identified earlier through data.
 
-### Initial player representation concept
+Initial player representation concept
 
 Represent each player as a vector in an n-dimensional feature space, potentially including metrics related to progressive passing, progressive carrying, chance creation, defensive actions, pressures, interceptions, passing under pressure, shot creation, and pitch-zone involvement.
 
-### Similarity concept
+Similarity concept
 
 Once players are represented quantitatively, compare profiles using methods such as cosine similarity or Euclidean distance. Any similarity score should be interpretable and accompanied by an explanation of why two players are considered similar.
 
-### Talent discovery concept
+Talent discovery concept
 
 A future candidate score may incorporate factors such as:
 
@@ -34,13 +34,13 @@ A future candidate score may incorporate factors such as:
 
 Machine learning may eventually be used to learn such a function, but not before the representation and similarity problems are understood.
 
-### Core decision
+Core decision
 
 The project should be framed around the question:
 
 > **Which players should a scout investigate further?**
 
-### Early risks identified
+Early risks identified
 
 - contextual normalization
 - league-strength differences
@@ -49,7 +49,7 @@ The project should be framed around the question:
 - survivorship bias
 - data leakage
 
-### Project charter established
+Project charter established
 
 Primary user: club recruitment analyst / sporting director.
 
@@ -57,7 +57,7 @@ Initial candidate pool: young senior-level professional outfield players.
 
 Initial output: key attributes, percentile profiles, professional player comparisons, and searchable/cross-player comparisons.
 
-### Roadmap established
+Roadmap established
 
 1. Player Representation
 2. Player Similarity
@@ -68,13 +68,13 @@ Initial output: key attributes, percentile profiles, professional player compari
 7. Youth Identification
 8. Product
 
-## 2026-09-04 — Phase 1 Data Feasibility
+2026-09-04 — Phase 1 Data Feasibility
 
-### Phase 1 question
+Phase 1 question
 
 > **Can we create a meaningful quantitative representation of how a professional soccer player plays?**
 
-### Data strategy
+Data strategy
 
 Start with the Premier League as a controlled pilot, then expand to Serie A, Bundesliga, La Liga, Ligue 1, and other leagues.
 
@@ -87,7 +87,7 @@ Potential sources identified:
 5. DataMB + Opta Analyst — product/methodology references
 6. Hudl — useful but deferred because the current priority is free data
 
-### Current research task
+Current research task
 
 Review available statistics and determine which variables might meaningfully describe:
 
@@ -97,9 +97,9 @@ Review available statistics and determine which variables might meaningfully des
 
 The goal is to understand the football meaning of the available metrics before downloading data or building models.
 
-## 2026-09-05 — Expanded Variable Inventory
+2026-09-05 — Expanded Variable Inventory
 
-### Progress
+Progress
 
 Built broader candidate-variable inventories for four positional families:
 
@@ -112,7 +112,7 @@ The lists currently separate playing-time/context variables, performance variabl
 
 Examples of newly catalogued candidate metrics include expected goals, expected assisted goals, key passes, passes into the penalty area, through balls, progressive carries, touches by pitch zone, carries into the penalty area, take-ons, ball recoveries, line-breaking passes, dispossessions, duel outcomes, long passing, clearances, physical distance covered, and goalkeeper-specific shot-stopping and sweeping actions.
 
-### Emerging design questions
+Emerging design questions
 
 The variable inventory is intentionally broad at this stage. The next step is to organize metrics into football-relevant feature families or subcategories rather than treating each statistic independently.
 
@@ -124,6 +124,6 @@ Important distinctions to address next:
 - a single master feature dictionary may be preferable to permanently duplicating the same variables across positional lists, with role-specific relevance handled later;
 - hybrid roles should remain possible, rather than forcing every player into a rigid broad-position feature set.
 
-### Next session
+Next session
 
 Begin converting the raw metric inventory into a structured feature taxonomy, then evaluate which metrics are relevant, redundant, contextual, derived, or unavailable/unconfirmed for each role family.
