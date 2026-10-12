@@ -127,3 +127,36 @@ Important distinctions to address next:
 Next session
 
 Begin converting the raw metric inventory into a structured feature taxonomy, then evaluate which metrics are relevant, redundant, contextual, derived, or unavailable/unconfirmed for each role family.
+
+2026-09-11 to 2026-09-15 — StatsBomb Event-Data Pilot
+
+I explored free StatsBomb Open Data through `statsbombpy` and selected the 2015/16 Premier League metadata entry (`competition_id=2`, `season_id=27`). I used Chelsea vs Arsenal on 2015-09-19 (`match_id=3754217`) as my one-match case study. The match events contain 1,046 Pass events. I exported the event table to CSV and examined its columns, data types, missing values, and pass attributes.
+
+I recognized that a raw event table is more useful as a feature-engineering source than as a direct scouting report. My direction shifted toward converting pass start/end coordinates into useful spatial measurements and eventually displaying them on a pitch. I also decided to keep the original data intact and work with a separate passing DataFrame.
+
+2026-10-12 — Spatial Passing Map Prototype
+
+**Goal:** Turn the Chelsea–Arsenal event data into an individual player pass map and use this as a foundation for an eventual passing network.
+
+**Completed:**
+- Created `passingDF` by filtering for `type == "Pass"` and selecting 11 relevant columns (1,046 rows).
+- Converted CSV-imported `location` and `pass_end_location` string values into Python coordinate lists with `ast.literal_eval`.
+- Extracted `start_x`, `start_y`, `end_x`, and `end_y` numerical columns.
+- Calculated `delta_x`, `delta_y`, and Euclidean `calculated_length` using NumPy's `hypot`.
+- Compared calculated distance with the original `pass_length`: mean absolute difference `5.193949e-07`, median `3.486958e-07`, maximum `5.491767e-06` across 1,046 passes.
+- Interpreted these descriptive statistics as strong numerical agreement with the source measurements, not independent proof of real-world pass-location accuracy.
+- Used `mplsoccer` and Matplotlib to draw completed passes separately from other `pass_outcome` values. I kept the original outcome field rather than adding redundant status columns.
+- Successfully rendered individual passing maps for Cesc Fàbregas, Mesut Özil, Theo Walcott, and Santi Cazorla. The code is demonstrated across several players, though the plotting blocks are not yet consolidated into one reusable function.
+- Added a first-person passing-map explanation and mathematical-validation notes to my research notebook.
+
+**Not yet completed:** A passing network, player-to-player edge table, average pass-origin node positions, jersey number labels, a two-team overlay, interactive filters, an exported enriched passing CSV, or automation across matches. The 380-match listing is metadata; complete match-level event availability should be verified before planning a season-scale run.
+
+**Next session — Passing Network v0.1:**
+1. Retrieve the Arsenal lineup through `sb.lineups(match_id=3754217)` and inspect player names and jersey numbers.
+2. Filter Arsenal passes with `pass_outcome.isna()` and known `pass_recipient`; consider how to handle special outcomes and set pieces.
+3. Create a directed edge table using `groupby(["player", "pass_recipient"]).size()`.
+4. Calculate each player's mean pass-start location as an initial network node location (not a measured tracking position).
+5. Join jersey numbers and plot weighted connections on an Arsenal pitch with `mplsoccer`.
+6. After visual validation, consider splitting by half and making plotting code reusable.
+
+**Methodology questions for later:** StatsBomb coordinates standardize attacking direction, so team overlays require care; player passing networks should account for substitutes and differing playing times; event locations and completed-pass definitions are based on the provider's coding convention.
