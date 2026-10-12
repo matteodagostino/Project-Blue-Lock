@@ -105,8 +105,7 @@ shows a single player's passes on a StatsBomb-coordinate pitch:
 
 These are exploratory **single-match** visualizations, not season-long player
 ratings or measures of passing quality. The pitch coordinates and pass lengths
-were validated for numerical consistency; the locations have not been
-independently checked against video.
+were validated for numerical consistency.
 
 | Cesc Fàbregas | Mesut Özil |
 |:---:|:---:|
