@@ -1,145 +1,58 @@
 # Current Project Status
 
-_Last updated: 2026-09-15_
+_Last updated: 2026-10-12_
 
-## Current Phase
+## Phase 1 — Player Representation
 
-Project Blue Lock is still in **Phase 1 — Player Representation**. The current question remains:
+My guiding question is: **Can I build a meaningful quantitative representation of how a soccer player plays?**
 
-> **Can we create a meaningful quantitative representation of how a professional soccer player plays?**
+I am currently experimenting with **event-level spatial passing data** before committing to a comprehensive player profiling or similarity system.
 
-The most recent work shifted the short-term prototype from searching only for ready-made aggregate player statistics toward learning how to engineer useful passing features directly from event-level data.
+## Dataset and Working Tables
 
-## Latest Experiment — StatsBomb Open Data
+I am using StatsBomb Open Data through `statsbombpy` for the **2015/16 Premier League**, initially testing **Chelsea vs Arsenal (2015-09-19)**:
 
-StatsBomb Open Data was tested as an event-level source using the `statsbombpy` Python package.
+- Competition ID: `2`
+- Season ID: `27`
+- Match ID: `3754217`
+- The match contains **1,046 Pass events**.
 
-The available Premier League seasons were audited and the **2015/16 Premier League** was selected as the first controlled test dataset:
+I originally exported all match events to CSV and loaded them into Pandas as `CFCvARSvGW1`. I preserve this table as the original event data. I then created `passingDF` by filtering for pass events and selecting **11 columns**: `player`, `team`, `position`, `location`, `pass_end_location`, `pass_length`, `pass_recipient`, `pass_outcome`, `play_pattern`, `minute`, and `second`.
 
-- `competition_id = 2`
-- `season_id = 27`
-- 380 matches available
+**Data availability note:** The competition metadata returned 380 Premier League match records, but full event availability across all those matches has not been verified. I will not assume a complete 380-match event corpus until I audit it.
 
-The first test match selected was:
+## Completed on October 12
 
-- **Chelsea vs Arsenal**
-- **2015-09-19**
-- `match_id = 3754217`
+1. **Prepared spatial coordinates.** I converted string-encoded lists in `location` and `pass_end_location` into actual Python lists, then created `start_x`, `start_y`, `end_x`, and `end_y`.
+2. **Built pass vectors.** I calculated `delta_x` and `delta_y`, then used `np.hypot` to calculate Euclidean pass lengths.
+3. **Validated distance calculations.** Across the 1,046 pass events, the mean absolute difference from StatsBomb `pass_length` was `5.193949e-07`, median `3.486958e-07`, and maximum `5.491767e-06`. This supports correct extraction and geometric consistency but does not independently verify real-world event locations.
+4. **Created individual pitch maps.** Using `mplsoccer` and Matplotlib, I plotted pass arrows for Cesc Fàbregas, Mesut Özil, Theo Walcott, and Santi Cazorla. These maps show completed passes separately from other recorded outcomes.
+5. **Confirmed the `pass_outcome` convention.** A null outcome generally represents a completed pass; populated values indicate another recorded outcome. I kept the source column instead of generating duplicate indicator columns.
+6. **Documented the workflow in first person** in the working research notebook.
 
-The match event data was loaded successfully. Event types were inspected and the match contained **1,046 Pass events**. Pass events were isolated into a separate DataFrame and pass-specific fields were reviewed.
+The plots render for multiple players, so I have a working **single-player passing-map prototype**. I have not yet produced a network or independently compared pass locations with match footage.
 
-The raw match event table was exported to CSV and reloaded with pandas for inspection. Initial data-quality checks were started for data types, missing values, and duplicate rows.
+## Next Session — Build the Passing Network
 
-## Key Realization
+My immediate goal is a **one-team Arsenal passing network** using the same Chelsea–Arsenal match:
 
-The raw StatsBomb event table is not directly useful as a scouting output by itself. Its value is that it contains the spatial and contextual information needed to engineer our own football features.
+1. Use `sb.lineups(match_id=3754217)` to inspect the Arsenal roster and shirt numbers.
+2. Keep Arsenal passes with a null `pass_outcome` and identifiable `pass_recipient`.
+3. Aggregate directed passer-to-recipient counts into an edge table.
+4. Calculate average pass-start coordinates for each passer to create network nodes.
+5. Join jersey numbers and plot a network with node positions and edge widths encoding completed pass counts.
+6. Check whether substitutions, minutes played, and set pieces create misleading connections; choose sensible filters before further comparison.
 
-Each pass can be treated as a vector from a start coordinate `(x1, y1)` to an end coordinate `(x2, y2)`.
+**Definition reminder:** A network node at the mean pass-origin location is *not* the player's true average location in the match.
 
-This creates the opportunity to derive features such as:
+## Longer-Term Visual Product
 
-- pass starting location
-- pass ending location
-- defensive / middle / attacking third
-- forward, lateral, or backward movement
-- pass distance
-- progressive passes
-- final-third entries
-- penalty-area entries
-- long passes
-- completion status
+My eventual interface should be **pitch-first**, with the soccer field occupying most of the screen and player and passing-attribute filters changing the displayed arrows or passing connections. The current preferred experimentation stack is `Python + mplsoccer`; I may later evaluate `Plotly + Streamlit` for an interactive scouting interface.
 
-The same approach can later be extended to carries and other event types.
+Later phases include defensive/middle/attacking-third classification, progressive-pass definitions, penalty-area entries, automated per-match processing, and meaningful player-level aggregations. Those metrics and the complete two-team network **have not yet been implemented**.
 
-## Current Intended Spatial Passing Pipeline
+## Main Files
 
-```text
-StatsBomb raw events
-        ↓
-Filter Pass events
-        ↓
-Split start/end coordinates
-        ↓
-Engineer spatial features + classifications
-        ↓
-Save clean passes_enriched.csv
-        ↓
-Validate on a football pitch
-        ↓
-Generalize across all 380 Premier League matches
-        ↓
-Aggregate into player-level passing profiles
-        ↓
-Interactive scouting interface
-```
-
-## Candidate Analytical Columns
-
-The first enriched pass-level table is expected to contain fields such as:
-
-```text
-match_id
-player
-team
-minute
-second
-start_x
-start_y
-end_x
-end_y
-delta_x
-delta_y
-pass_length
-completed
-start_third
-end_third
-pass_direction
-progressive_pass
-final_third_entry
-penalty_area_entry
-long_pass
-```
-
-Exact definitions for progressive passes, long passes, and zone-entry metrics should be selected deliberately and documented rather than chosen arbitrarily.
-
-## Visualization Direction
-
-The desired product is now more **pitch-first** than a traditional KPI-heavy dashboard.
-
-The central interaction should resemble a player event view such as SofaScore:
-
-- the football pitch occupies most of the interface;
-- the user selects a player;
-- the pitch redraws to show only that player's passes;
-- selectable attributes such as All Passes, Progressive, Long, Final Third, or Into Box filter what is drawn;
-- supporting metrics remain secondary to the spatial visualization.
-
-Power BI is no longer assumed to be the final visualization tool. The current leading workflow is:
-
-1. **Python + mplsoccer** for validating StatsBomb coordinates and football logic.
-2. Evaluate **Streamlit + Plotly** for the interactive application.
-3. Compare against Tableau / Power BI only after the spatial prototype is working.
-
-## Exact Resume Point
-
-The next task is **Spatial Passing Pipeline v0.1** using only Chelsea vs Arsenal.
-
-Start by transforming StatsBomb's nested coordinate fields:
-
-```text
-location → start_x, start_y
-pass_end_location → end_x, end_y
-```
-
-Then calculate / validate:
-
-```text
-delta_x
-Delta_y
-pass distance
-pitch-third classifications
-```
-
-Before defining progressive passes or other higher-level metrics, plot one selected player's passes on a StatsBomb-format pitch and verify that the spatial coordinates are correct.
-
-Once the one-match transformation works reliably, package it as reusable Python functions and apply the same pipeline across the full 2015/16 Premier League season.
+- [Research notebook](../notebooks/ProjectBlueLock.ipynb) — initial repository notebook; see the work log for the latest progress.
+- [Work log](work-log.md) — chronological project decisions and results.
+- [Data source evaluation](data-source-evaluation.md) — candidate sources, licensing considerations, and coverage caveats.
