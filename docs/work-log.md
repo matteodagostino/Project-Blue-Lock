@@ -160,3 +160,10 @@ I recognized that a raw event table is more useful as a feature-engineering sour
 6. After visual validation, consider splitting by half and making plotting code reusable.
 
 **Methodology questions for later:** StatsBomb coordinates standardize attacking direction, so team overlays require care; player passing networks should account for substitutes and differing playing times; event locations and completed-pass definitions are based on the provider's coding convention.
+
+
+### 2026-10-12 — End-of-session checkpoint (latest notebook review)
+
+I reviewed my latest local research notebook (`ProjectBlueLock (6).ipynb`) before stopping for the day. The notebook contains the passing-only filtering, coordinate parsing, vector/distance validation, and player-specific pitch plotting experiments. I tested the plotting approach on several players and wrote a first-person explanation of the pipeline.
+
+I have **not yet implemented the passing network** in the notebook. Tomorrow I will start with Arsenal's lineup and jersey numbers, then create passer-to-recipient connection counts and mean pass-origin nodes before plotting the first network. The local notebook is my latest working copy; this work-log entry does not imply that its full `.ipynb` contents have been synced to GitHub.
