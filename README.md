@@ -114,13 +114,8 @@ independently checked against video.
 | Theo Walcott | Santi Cazorla |
 | ![Walcott passing map](visualizations/passing-maps/walcott_pass_map.png) | ![Cazorla passing map](visualizations/passing-maps/cazorla_pass_map.png) |
 
-Browse the individual [passing map images](visualizations/passing-maps/)
-or rerun the exporter with:
-
-```bash
-python -m pip install statsbombpy mplsoccer matplotlib pandas
-python scripts/export_passing_maps.py
-```
+Browse the individual [passing map images](visualizations/passing-maps/).
+The [research notebook](notebooks/ProjectBlueLock.ipynb) documents the analysis and visualization process.
 
 Data attribution: **StatsBomb Open Data** ([GitHub dataset](https://github.com/statsbomb/open-data)).
 Next planned visualization: team passing networks, using nodes for players
