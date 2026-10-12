@@ -94,6 +94,38 @@ Current source candidates:
 
 The current research task is to identify which available metrics meaningfully describe defenders, midfielders, and forwards before committing to a final feature set.
 
+## Phase 1 — Individual Passing Maps
+
+The first match-level visualization prototype uses **StatsBomb Open Data** for
+**Chelsea vs Arsenal (19 September 2015, Premier League 2015/16)**. Each map
+shows a single player's passes on a StatsBomb-coordinate pitch:
+
+- **Light green arrows:** completed passes (missing `pass_outcome` in the event data).
+- **Red arrows:** other recorded outcomes (including incomplete, out, and offside passes).
+
+These are exploratory **single-match** visualizations, not season-long player
+ratings or measures of passing quality. The pitch coordinates and pass lengths
+were validated for numerical consistency; the locations have not been
+independently checked against video.
+
+| Cesc Fàbregas | Mesut Özil |
+|:---:|:---:|
+| ![Fàbregas passing map](visualizations/passing-maps/fabregas_pass_map.png) | ![Özil passing map](visualizations/passing-maps/ozil_pass_map.png) |
+| Theo Walcott | Santi Cazorla |
+| ![Walcott passing map](visualizations/passing-maps/walcott_pass_map.png) | ![Cazorla passing map](visualizations/passing-maps/cazorla_pass_map.png) |
+
+Browse the individual [passing map images](visualizations/passing-maps/)
+or rerun the exporter with:
+
+```bash
+python -m pip install statsbombpy mplsoccer matplotlib pandas
+python scripts/export_passing_maps.py
+```
+
+Data attribution: **StatsBomb Open Data** ([GitHub dataset](https://github.com/statsbomb/open-data)).
+Next planned visualization: team passing networks, using nodes for players
+and weighted edges for player-to-player completed passes.
+
 ## Planned Technology Stack
 
 - Python
